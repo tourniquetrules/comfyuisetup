@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 #
-# Final, Robust ComfyUI Setup Script for Lambda Cloud
-# This version installs PyTorch for CUDA 12.9 first to prevent dependency conflicts.
+# Definitive ComfyUI Setup Script for Lambda Cloud
+# Installs PyTorch for CUDA first, adds all custom nodes and workflows.
 #
 
 # --- Prompt for Hugging Face Token at the very beginning ---
@@ -29,6 +29,11 @@ DIFFUSION_DIR="${COMFY_DIR}/models/diffusion_models"
 TEXT_ENCODER_DIR="${COMFY_DIR}/models/text_encoders"
 VAE_DIR="${COMFY_DIR}/models/vae"
 LORA_DIR="${COMFY_DIR}/models/loras"
+
+# --- Custom User Workflow ---
+USER_WORKFLOW_URL="https://raw.githubusercontent.com/tourniquetrules/comfyuisetup/main/1_Qwen-Edit_HRF_v0.json"
+USER_WORKFLOW_DIR="${COMFY_DIR}/user/default/workflows"
+USER_WORKFLOW_NAME="1_Qwen-Edit_HRF_v0.json"
 
 # --- Model URLs ---
 QWEN_UNET_EDIT_URL="https://huggingface.co/Comfy-Org/Qwen-Image-Edit_ComfyUI/resolve/main/split_files/diffusion_models/qwen_image_edit_fp8_e4m3fn.safetensors"
@@ -70,26 +75,25 @@ if [ -d "$COMFY_DIR" ]; then
   rm -rf "$COMFY_DIR"
 fi
 
-say "[1/7] Installing OS packages…"
+say "[1/8] Installing OS packages…"
 sudo apt-get update -y
 sudo apt-get install -y git "${PYTHON_BIN}-venv" "${PYTHON_BIN}-pip" ffmpeg aria2 curl
 
-say "[2/7] Cloning a fresh copy of ComfyUI repository…"
+say "[2/8] Cloning a fresh copy of ComfyUI repository…"
 git clone https://github.com/comfyanonymous/ComfyUI.git "$COMFY_DIR"
 
-say "[3/7] Setting up Python environment and installing PyTorch for GPU…"
+say "[3/8] Setting up Python environment and installing PyTorch for GPU…"
 VENV_DIR="$COMFY_DIR/venv"
 "$PYTHON_BIN" -m venv "$VENV_DIR"
 VENV_PIP="${VENV_DIR}/bin/pip"
 "$VENV_PIP" install --upgrade pip wheel
-# CRITICAL STEP: Install PyTorch with user-specified CUDA 12.9 support FIRST
-"$VENV_PIP" install torch torchvision torchaudio --extra-index-url https://download.pytorch.org/whl/cu129
+# CRITICAL STEP: Install PyTorch with CUDA support FIRST and in isolation.
+"$VENV_PIP" install torch torchvision torchaudio --extra-index-url https://download.pytorch.org/whl/cu121
 
-say "[4/7] Verifying PyTorch and CUDA..."
-# This verification now happens immediately after install and will stop the script on failure.
+say "[4/8] Verifying PyTorch and CUDA..."
 "${VENV_DIR}/bin/python" -c "import torch; assert torch.cuda.is_available(), 'ERROR: CUDA not available to PyTorch. Installation failed.'; print(f'✅ PyTorch {torch.__version__} with CUDA {torch.version.cuda} is correctly installed.')"
 
-say "[5/7] Installing ComfyUI and Custom Node Dependencies…"
+say "[5/8] Installing ComfyUI and Custom Node Dependencies…"
 # Now that PyTorch is correctly installed, we install other requirements.
 "$VENV_PIP" install -r "${COMFY_DIR}/requirements.txt" --upgrade
 # Install Custom Nodes
@@ -103,7 +107,7 @@ git clone https://github.com/kijai/ComfyUI-KJNodes.git "${CUSTOM_NODES_DIR}/Comf
 "$VENV_PIP" install -r "${CUSTOM_NODES_DIR}/ComfyUI-KJNodes/requirements.txt"
 "$VENV_PIP" install gguf
 
-say "[6/7] Downloading all required models…"
+say "[6/8] Downloading all required models…"
 if [[ -n "${HF_TOKEN}" ]]; then say "Using HF Token for downloads."; else say "No HF Token provided."; fi
 # Qwen Image Models
 aria2_get "$DIFFUSION_DIR"    "qwen_image_edit_fp8_e4m3fn.safetensors" "$QWEN_UNET_EDIT_URL"
@@ -119,7 +123,13 @@ aria2_get "$LORA_DIR"         "wan2.2_t2v_lightx2v_4steps_lora_v1.1_low_noise.sa
 aria2_get "$VAE_DIR"          "wan_2.1_vae.safetensors" "$WAN_VAE_URL"
 aria2_get "$TEXT_ENCODER_DIR" "umt5_xxl_fp8_e4m3fn_scaled.safetensors" "$WAN_CLIP_URL"
 
-say "[7/7] Creating start script…"
+say "[7/8] Installing Custom User Workflow…"
+say "Creating directory: ${USER_WORKFLOW_DIR}"
+mkdir -p "${USER_WORKFLOW_DIR}"
+say "Downloading ${USER_WORKFLOW_NAME} to user workflows folder..."
+curl -Lo "${USER_WORKFLOW_DIR}/${USER_WORKFLOW_NAME}" "${USER_WORKFLOW_URL}"
+
+say "[8/8] Creating start script…"
 cat > "${HOME}/start_comfyui.sh" <<EOF
 #!/usr/bin/env bash
 set -e
@@ -131,6 +141,8 @@ chmod +x "${HOME}/start_comfyui.sh"
 
 echo
 echo -e "\033[1;32m✅ Setup complete.\033[0m"
+echo
+echo "Your custom workflow has been saved. You can load it from the Manager menu."
 echo
 echo "To start ComfyUI, run:"
 echo "  ${HOME}/start_comfyui.sh"
