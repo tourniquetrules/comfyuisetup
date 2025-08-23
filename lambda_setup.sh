@@ -88,7 +88,7 @@ VENV_DIR="$COMFY_DIR/venv"
 VENV_PIP="${VENV_DIR}/bin/pip"
 "$VENV_PIP" install --upgrade pip wheel
 # CRITICAL STEP: Install PyTorch with CUDA support FIRST and in isolation.
-"$VENV_PIP" install torch torchvision torchaudio --extra-index-url https://download.pytorch.org/whl/cu121
+"$VENV_PIP" install torch torchvision torchaudio --extra-index-url https://download.pytorch.org/whl/cu129
 
 say "[4/8] Verifying PyTorch and CUDA..."
 "${VENV_DIR}/bin/python" -c "import torch; assert torch.cuda.is_available(), 'ERROR: CUDA not available to PyTorch. Installation failed.'; print(f'✅ PyTorch {torch.__version__} with CUDA {torch.version.cuda} is correctly installed.')"
