@@ -48,6 +48,13 @@ WAN_LORA_LOW_URL="https://huggingface.co/Comfy-Org/Wan_2.2_ComfyUI_Repackaged/re
 WAN_VAE_URL="https://huggingface.co/Comfy-Org/Wan_2.2_ComfyUI_Repackaged/resolve/main/split_files/vae/wan_2.1_vae.safetensors"
 WAN_CLIP_URL="https://huggingface.co/Comfy-Org/Wan_2.1_ComfyUI_repackaged/resolve/main/split_files/text_encoders/umt5_xxl_fp8_e4m3fn_scaled.safetensors"
 
+# --- FLUX.1 Krea Dev Models (ADDED) ---
+FLUX_UNET_URL="https://huggingface.co/Comfy-Org/FLUX.1-Krea-dev_ComfyUI/resolve/main/split_files/diffusion_models/flux1-krea-dev_fp8_scaled.safetensors"
+FLUX_CLIP_L_URL="https://huggingface.co/comfyanonymous/flux_text_encoders/resolve/main/clip_l.safetensors"
+FLUX_T5_URL="https://huggingface.co/comfyanonymous/flux_text_encoders/resolve/main/t5xxl_fp16.safetensors"
+FLUX_VAE_URL="https://huggingface.co/Comfy-Org/Lumina_Image_2.0_Repackaged/resolve/main/split_files/vae/ae.safetensors"
+
+
 ########################################
 # Helper Functions
 ########################################
@@ -109,13 +116,21 @@ git clone https://github.com/kijai/ComfyUI-KJNodes.git "${CUSTOM_NODES_DIR}/Comf
 
 say "[6/8] Downloading all required models…"
 if [[ -n "${HF_TOKEN}" ]]; then say "Using HF Token for downloads."; else say "No HF Token provided."; fi
+# FLUX.1 Krea Dev Models (ADDED)
+say "--- Downloading FLUX.1 Models ---"
+aria2_get "$DIFFUSION_DIR"    "flux1-krea-dev_fp8_scaled.safetensors" "$FLUX_UNET_URL"
+aria2_get "$TEXT_ENCODER_DIR" "clip_l.safetensors" "$FLUX_CLIP_L_URL"
+aria2_get "$TEXT_ENCODER_DIR" "t5xxl_fp16.safetensors" "$FLUX_T5_URL"
+aria2_get "$VAE_DIR"          "ae.safetensors" "$FLUX_VAE_URL"
 # Qwen Image Models
+say "--- Downloading Qwen Models ---"
 aria2_get "$DIFFUSION_DIR"    "qwen_image_edit_fp8_e4m3fn.safetensors" "$QWEN_UNET_EDIT_URL"
 aria2_get "$DIFFUSION_DIR"    "qwen_image_fp8_e4m3fn.safetensors" "$QWEN_UNET_NATIVE_URL"
 aria2_get "$LORA_DIR"         "Qwen-Image-Lightning-4steps-V1.0-bf16.safetensors" "$QWEN_LORA_URL"
 aria2_get "$TEXT_ENCODER_DIR" "qwen_2.5_vl_7b_fp8_scaled.safetensors" "$QWEN_CLIP_URL"
 aria2_get "$VAE_DIR"          "qwen_image_vae.safetensors" "$QWEN_VAE_URL"
 # WAN Video Models
+say "--- Downloading WAN Models ---"
 aria2_get "$DIFFUSION_DIR"    "wan2.2_t2v_high_noise_14B_fp8_scaled.safetensors" "$WAN_UNET_HIGH_URL"
 aria2_get "$DIFFUSION_DIR"    "wan2.2_t2v_low_noise_14B_fp8_scaled.safetensors" "$WAN_UNET_LOW_URL"
 aria2_get "$LORA_DIR"         "wan2.2_t2v_lightx2v_4steps_lora_v1.1_high_noise.safetensors" "$WAN_LORA_HIGH_URL"
