@@ -29,7 +29,7 @@ DIFFUSION_DIR="${COMFY_DIR}/models/diffusion_models"
 TEXT_ENCODER_DIR="${COMFY_DIR}/models/text_encoders"
 VAE_DIR="${COMFY_DIR}/models/vae"
 LORA_DIR="${COMFY_DIR}/models/loras"
-# --- (ADDED) Directory for VibeVoice & S2V audio models ---
+# --- (ADDED) Directory for S2V audio models ---
 AUDIO_ENCODER_DIR="${COMFY_DIR}/models/audio_encoders"
 
 # --- Custom User Workflow ---
@@ -56,7 +56,7 @@ FLUX_CLIP_L_URL="https://huggingface.co/comfyanonymous/flux_text_encoders/resolv
 FLUX_T5_URL="https://huggingface.co/comfyanonymous/flux_text_encoders/resolve/main/t5xxl_fp16.safetensors"
 FLUX_VAE_URL="https://huggingface.co/Comfy-Org/Lumina_Image_2.0_Repackaged/resolve/main/split_files/vae/ae.safetensors"
 
-# --- (ADDED) WAN S2V Models for video_wan2_2_14B_s2v.json workflow ---
+# --- (ADDED) WAN S2V Models ---
 WAN_UNET_S2V_URL="https://huggingface.co/Comfy-Org/Wan_2.2_ComfyUI_Repackaged/resolve/main/split_files/diffusion_models/wan2.2_s2v_14B_fp8_scaled.safetensors"
 WAN_AUDIO_ENCODER_URL="https://huggingface.co/Comfy-Org/Wan_2.2_ComfyUI_Repackaged/resolve/main/split_files/audio_encoders/wav2vec2_large_english_fp16.safetensors"
 
@@ -115,14 +115,9 @@ git clone https://github.com/WASasquatch/was-node-suite-comfyui.git "${CUSTOM_NO
 git clone https://github.com/rgthree/rgthree-comfy.git "${CUSTOM_NODES_DIR}/rgthree-comfy"
 git clone https://github.com/city96/ComfyUI-GGUF.git "${CUSTOM_NODES_DIR}/ComfyUI-GGUF"
 git clone https://github.com/kijai/ComfyUI-KJNodes.git "${CUSTOM_NODES_DIR}/ComfyUI-KJNodes"
-# --- (ADDED) Install VibeVoice custom node ---
-git clone https://github.com/another-ai-artist/ComfyUI-VibeVoice.git "${CUSTOM_NODES_DIR}/ComfyUI-VibeVoice"
-
 # Install Custom Node Dependencies
 "$VENV_PIP" install -r "${CUSTOM_NODES_DIR}/was-node-suite-comfyui/requirements.txt"
 "$VENV_PIP" install -r "${CUSTOM_NODES_DIR}/ComfyUI-KJNodes/requirements.txt"
-# --- (ADDED) Install VibeVoice dependencies ---
-"$VENV_PIP" install -r "${CUSTOM_NODES_DIR}/ComfyUI-VibeVoice/requirements.txt"
 "$VENV_PIP" install gguf
 
 say "[6/8] Downloading all required models…"
