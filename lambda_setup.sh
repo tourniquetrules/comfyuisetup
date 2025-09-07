@@ -29,8 +29,11 @@ DIFFUSION_DIR="${COMFY_DIR}/models/diffusion_models"
 TEXT_ENCODER_DIR="${COMFY_DIR}/models/text_encoders"
 VAE_DIR="${COMFY_DIR}/models/vae"
 LORA_DIR="${COMFY_DIR}/models/loras"
-# --- (ADDED) Directory for S2V audio models ---
 AUDIO_ENCODER_DIR="${COMFY_DIR}/models/audio_encoders"
+WAV2VEC2_DIR="${COMFY_DIR}/models/wav2vec2"
+# --- (ADDED) Directory for WanVideoWrapper clip_vision models ---
+CLIP_VISION_DIR="${COMFY_DIR}/models/clip_vision"
+
 
 # --- Custom User Workflow ---
 USER_WORKFLOW_URL="https://raw.githubusercontent.com/tourniquetrules/comfyuisetup/main/1_Qwen-Edit_HRF_v0.json"
@@ -56,9 +59,17 @@ FLUX_CLIP_L_URL="https://huggingface.co/comfyanonymous/flux_text_encoders/resolv
 FLUX_T5_URL="https://huggingface.co/comfyanonymous/flux_text_encoders/resolve/main/t5xxl_fp16.safetensors"
 FLUX_VAE_URL="https://huggingface.co/Comfy-Org/Lumina_Image_2.0_Repackaged/resolve/main/split_files/vae/ae.safetensors"
 
-# --- (ADDED) WAN S2V Models ---
+# --- WAN S2V Models ---
 WAN_UNET_S2V_URL="https://huggingface.co/Comfy-Org/Wan_2.2_ComfyUI_Repackaged/resolve/main/split_files/diffusion_models/wan2.2_s2v_14B_fp8_scaled.safetensors"
 WAN_AUDIO_ENCODER_URL="https://huggingface.co/Comfy-Org/Wan_2.2_ComfyUI_Repackaged/resolve/main/split_files/audio_encoders/wav2vec2_large_english_fp16.safetensors"
+
+# --- WanVideoWrapper / InfiniteTalk Models ---
+WAN_I2V_GGUF_URL="https://huggingface.co/city96/Wan2.1-I2V-14B-480P-gguf/resolve/main/wan2.1-i2v-14b-480p-Q4_0.gguf"
+WAN_INFINITETALK_GGUF_URL="https://huggingface.co/Kijai/WanVideo_comfy_GGUF/resolve/main/InfiniteTalk/Wan2_1-InfiniteTalk_Single_Q8.gguf"
+WAN_WAV2VEC2_CHINESE_URL="https://huggingface.co/Kijai/wav2vec2_safetensors/resolve/main/wav2vec2-chinese-base_fp16.safetensors"
+WAN_UMT5_URL="https://huggingface.co/ALGOTECH/WanVideo_comfy/resolve/main/umt5-xxl-enc-bf16.safetensors"
+# --- (ADDED) URL for WanVideoWrapper clip_vision model ---
+WAN_CLIP_VISION_URL="https://huggingface.co/Comfy-Org/Wan_2.1_ComfyUI_repackaged/resolve/main/split_files/clip_vision/clip_vision_h.safetensors"
 
 
 ########################################
@@ -143,10 +154,17 @@ aria2_get "$LORA_DIR"         "wan2.2_t2v_lightx2v_4steps_lora_v1.1_high_noise.s
 aria2_get "$LORA_DIR"         "wan2.2_t2v_lightx2v_4steps_lora_v1.1_low_noise.safetensors" "$WAN_LORA_LOW_URL"
 aria2_get "$VAE_DIR"          "wan_2.1_vae.safetensors" "$WAN_VAE_URL"
 aria2_get "$TEXT_ENCODER_DIR" "umt5_xxl_fp8_e4m3fn_scaled.safetensors" "$WAN_CLIP_URL"
-# --- (ADDED) Downloading WAN S2V Models ---
+# WAN S2V Models
 say "--- Downloading WAN S2V Models ---"
 aria2_get "$DIFFUSION_DIR"    "wan2.2_s2v_14B_fp8_scaled.safetensors" "$WAN_UNET_S2V_URL"
 aria2_get "$AUDIO_ENCODER_DIR" "wav2vec2_large_english_fp16.safetensors" "$WAN_AUDIO_ENCODER_URL"
+# WanVideoWrapper / InfiniteTalk Models
+say "--- Downloading WanVideoWrapper / InfiniteTalk Models ---"
+aria2_get "$DIFFUSION_DIR"    "wan2.1-i2v-14b-480p-Q4_0.gguf" "$WAN_I2V_GGUF_URL"
+aria2_get "$DIFFUSION_DIR"    "Wan2_1-InfiniteTalk_Single_Q8.gguf" "$WAN_INFINITETALK_GGUF_URL"
+aria2_get "$WAV2VEC2_DIR"     "wav2vec2-chinese-base_fp16.safetensors" "$WAN_WAV2VEC2_CHINESE_URL"
+aria2_get "$TEXT_ENCODER_DIR" "umt5-xxl-enc-bf16.safetensors" "$WAN_UMT5_URL"
+aria2_get "$CLIP_VISION_DIR"  "clip_vision_h.safetensors" "$WAN_CLIP_VISION_URL"
 
 
 say "[7/8] Installing Custom User Workflow…"
